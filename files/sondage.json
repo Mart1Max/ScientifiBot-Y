@@ -1,9 +1,11 @@
 {
-  "today_user": [],
-  "last_day": "2026-08-30",
-  "last_selection1": "Dragô Printanier",
-  "last_selection2": "Donjouant",
-  "choice1": 0,
+  "today_user": [
+    "971809937338544259"
+  ],
+  "last_day": "2026-09-27",
+  "last_selection1": "Gargaros (Forme amicale)",
+  "last_selection2": "Tengurou",
+  "choice1": 1,
   "choice2": 0,
   "current_stage": 1,
   "1": [
@@ -614,7 +616,6 @@
     "Flèche d'azur",
     "Fouétar",
     "Fukurokuju",
-    "Gargaros (Forme amicale)",
     "Geeko",
     "Gentou",
     "Godichezilla",
@@ -695,7 +696,6 @@
     "Tauracle",
     "Tengu",
     "Tenguriginal",
-    "Tengurou",
     "Turboss",
     "Usapyon Zhongda",
     "Vampéric",
@@ -1012,6 +1012,7 @@
     "Phémniscian",
     "Crânéidoscope",
     "Rouminet",
-    "Feulion"
+    "Feulion",
+    "Dragô Printanier"
   ]
 }

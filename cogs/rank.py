@@ -3,7 +3,7 @@ from discord.ext import commands
 from typing import Literal
 import bot_package.Custom_func as Cf
 import bot_package.data as data
-from bot_package.database import get_all_player_ids
+
 import os
 import time
 

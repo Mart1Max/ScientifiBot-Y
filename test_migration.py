@@ -1,5 +1,5 @@
 import asyncio
-from bot_package.database import get_all_player_ids, get_wallet_sql, get_inv_sql
+, get_wallet_sql, get_inv_sql
 
 async def test():
     ids = await get_all_player_ids()

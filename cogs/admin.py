@@ -7,7 +7,7 @@ import bot_package.Custom_func as Cf
 import bot_package.Check as Check
 import bot_package.data as data
 import bot_package.economy as eco
-from bot_package.database import get_all_player_ids
+
 from typing import Literal
 import time
 import io
