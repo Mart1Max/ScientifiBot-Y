@@ -121,7 +121,7 @@ class DiscordBot(commands.Bot):
         item in the trade queue should look like that :
         {
             user_id : True #he hase a trade/gift engaged
-            user_id2 : Flase #he asn't any trade/gift engaged
+            user_id2 : False #he asn't any trade/gift engaged
             
         }
         """
