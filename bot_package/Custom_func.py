@@ -341,10 +341,17 @@ async def HasMoreThanOneThing(input_id : int, thing:str, where: str):
     except (KeyError, IndexError):
         return False
 
+def _ensure_trophe_data(bag: dict) -> dict:
+    trophe_data = bag.setdefault("trophe_data", {})
+    trophe_data.setdefault("data", {})
+    trophe_data.setdefault("list", [])
+    trophe_data.setdefault("fusion", [])
+    return trophe_data
+
 async def trophe_check(user : int, ctx: commands.Context):
     bag = await get_bag(user)
 
-    trophe_user_data = bag["trophe_data"]
+    trophe_user_data = _ensure_trophe_data(bag)
 
     for trophe in data.trophe_data:
         try:
@@ -371,14 +378,15 @@ async def trophe_check(user : int, ctx: commands.Context):
 
 async def update_trophe_data(user : int, condition : str, value : int, mode: str):
     bag = await get_bag(user)
+    trophe_data = _ensure_trophe_data(bag)
 
     if mode == "set":
-        bag["trophe_data"]["data"][condition] = value
+        trophe_data["data"][condition] = value
     elif mode == "add":
         try : 
-            bag["trophe_data"]["data"][condition] += value
+            trophe_data["data"][condition] += value
         except KeyError:
-            bag["trophe_data"]["data"][condition] = value
+            trophe_data["data"][condition] = value
 
     await save_bag(bag, user)
 

@@ -1,12 +1,12 @@
 {
   "today_user": [
-    "971809937338544259"
+    "1363485177279414455"
   ],
-  "last_day": "2026-09-27",
-  "last_selection1": "Gargaros (Forme amicale)",
-  "last_selection2": "Tengurou",
-  "choice1": 1,
-  "choice2": 0,
+  "last_day": "2026-10-05",
+  "last_selection1": "Moqua glacé",
+  "last_selection2": "Ebisu",
+  "choice1": 0,
+  "choice2": 1,
   "current_stage": 1,
   "1": [
     "Amoiz",
@@ -357,7 +357,6 @@
     "Mme. Papilla",
     "Momignorante",
     "Mont merci",
-    "Moqua glacé",
     "Médisansss",
     "Mémogre",
     "Ninjamévu",
@@ -607,7 +606,6 @@
     "Dragô",
     "Dynamo",
     "Démophage",
-    "Ebisu",
     "El Squalador",
     "Entout' Hâtila",
     "Entraînette",
@@ -1013,6 +1011,7 @@
     "Crânéidoscope",
     "Rouminet",
     "Feulion",
-    "Dragô Printanier"
+    "Dragô Printanier",
+    "Gargaros (Forme amicale)"
   ]
 }
