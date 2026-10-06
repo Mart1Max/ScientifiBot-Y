@@ -62,7 +62,7 @@ class Fusion(commands.Cog):
             bag["trophe_data"]["fusion"].append(fusion)
             bag["trophe_data"]["data"]["fusion"] = len(bag["trophe_data"]["fusion"])
             await Cf.save_bag(bag, ctx.author.id)
-            await Cf.check_trophe(ctx.author.id, ctx)
+            await Cf.trophe_check(ctx.author.id, ctx)
         
         
         await Cf.remove(ctx.author.id, item_or_yokai_a, rang_item_A ,where_type_A)
