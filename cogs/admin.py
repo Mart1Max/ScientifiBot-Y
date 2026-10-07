@@ -300,21 +300,21 @@ class Admin_command(commands.Cog):
             return await ctx.send("Merci de fournir un identifiant utilisateur valide.", ephemeral=True)
         else:
             if methode == "add" :
-                await eco.add(input_id, amount)
+                await eco.add(input_id.id, amount)
                 self.bot.logger.warning(msg=f'{ctx.author.name} gave {amount} orb to {input_id}')
                 return await ctx.send(f"{amount} orbe on été ajouté au compte de <@{input_id}>.")
             if methode == "set":
-                await eco.reset(input_id)
-                await eco.add(input_id,amount)
+                await eco.reset(input_id.id)
+                await eco.add(input_id.id,amount)
                 self.bot.logger.warning(msg=f'{ctx.author.name} as set the wallet of {input_id} to {amount}')
                 return await ctx.send(f"Le compte de <@{input_id}> a été mis à {amount} orbe.")
             if methode == "reset":
-                await eco.reset(input_id)
+                await eco.reset(input_id.id)
                 
                 self.bot.logger.warning(msg=f'{ctx.author.name} as reset the wallet of {input_id}')
                 return await ctx.send(f"Le compte de <@{input_id}> a été réinitialisé à 0 orbe.")
             if methode == "del":
-                await eco.del_info(input_id)
+                await eco.del_info(input_id.id)
                 self.bot.logger.warning(msg=f'{ctx.author.name} deleted the wallet info of {input_id}')
                 return await ctx.send(f"Les informations économiques de <@{input_id}> ont été supprimées.")
 
