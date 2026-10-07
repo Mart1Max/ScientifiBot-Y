@@ -384,6 +384,9 @@ class Medallium(commands.Cog) :
             sorted_dict = {i: item_per_class[non_sorted_dicts][i] for i in list_key}
             item_per_class[non_sorted_dicts] = sorted_dict
 
+        for category, items in item_per_class.items():
+            brute_bag.setdefault(category, len(items))
+
         await Cf.update_trophe_data(ctx.author.id, "treasure", brute_bag["treasure"], "set")
         await Cf.update_trophe_data(ctx.author.id, "objects", brute_bag["obj"], "set")
         await Cf.trophe_check(ctx.author.id, ctx)

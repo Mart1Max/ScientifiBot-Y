@@ -312,7 +312,7 @@ class Admin_command(commands.Cog):
                 await eco.reset(input_id.id)
                 
                 self.bot.logger.warning(msg=f'{ctx.author.name} as reset the wallet of {input_id}')
-                return await ctx.send(f"Le compte de <@{input_id}> a été réinitialisé à 0 orbe.")
+                return await ctx.send(f"Le compte de <@{input_id.id}> a été réinitialisé à 0 orbe.")
             if methode == "del":
                 await eco.del_info(input_id.id)
                 self.bot.logger.warning(msg=f'{ctx.author.name} deleted the wallet info of {input_id}')
