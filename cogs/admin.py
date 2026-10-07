@@ -296,7 +296,7 @@ class Admin_command(commands.Cog):
     async def economie_mod(self, ctx : commands.context, input_id:discord.User,methode:Literal["add","set","reset","del"],amount=0):
         if not methode in ["add","set","reset","del"]:
             return await ctx.send("Merci d'utiliser une méthode valide ! (add, set, reset, del)", ephemeral=True)
-        elif ctx.guild.get_member(int(input_id)):
+        elif ctx.guild.get_member(input_id):
             return await ctx.send("Merci de fournir un identifiant utilisateur valide.", ephemeral=True)
         else:
             if methode == "add" :
