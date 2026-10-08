@@ -117,6 +117,9 @@ class sondage():
     async def sondage(self, ctx, user_id):
         # get the sondage data
         sondage_data = data.open_json(SONDAGE_PATH)
+        if sondage_data.get("champion"):
+            return
+
         cs = sondage_data["current_stage"]
         stage_key = str(cs)
         next_stage_key = str(cs + 1)
@@ -166,14 +169,25 @@ class sondage():
             # mettre le gagnant dans la list
             next_stage_list.append(sondage_data["last_selection1"])
             current_stage_list = sondage_data.setdefault(stage_key, [])
+            tournament_champion = None
             # si il reste que un yk dans la current list, le faire passer ainsi que le notifier
             if len(current_stage_list) == 1:
                 next_stage_list.append(current_stage_list[0])
                 poll_embed.add_field(name=f"le tour numéro {cs} est fini!", value=f"de manière exceptionnelle, le yokai {current_stage_list[0]} est passé au tour suivant car il était le dernier restant dans la liste!")
                 sondage_data[stage_key] = []
+                current_stage_list = []
             if len(current_stage_list) == 0:
                 sondage_data["current_stage"] += 1
+                stage_key = str(sondage_data["current_stage"])
+                current_stage_list = sondage_data.setdefault(stage_key, [])
                 poll_embed.add_field(name=f"le tour numéro {cs} est fini!", value=f"Le stage {cs} est terminé, le tour n°{cs+1} commence !")
+                if len(current_stage_list) == 1:
+                    tournament_champion = current_stage_list[0]
+                    sondage_data["champion"] = tournament_champion
+                    poll_embed.add_field(
+                        name="Le tournoi est terminé !",
+                        value=f"**{tournament_champion}** remporte le sondage !"
+                    )
             last_day_img_path = f"./files/poll_image/{last_day}.png"
             if os.path.exists(last_day_img_path):
                 last_day_img = self._get_image_from_path(last_day_img_path)
@@ -198,7 +212,12 @@ class sondage():
             sondage_data["choice1"] = 0
             sondage_data["choice2"] = 0
             sondage_data["today_user"] = []
+            if tournament_champion is not None:
+                data.save_json(SONDAGE_PATH, sondage_data)
+                return
+
             # choose 2 new yokai and make other stuff
+            stage_key = str(sondage_data["current_stage"])
             current_stage_list = sondage_data.setdefault(stage_key, [])
             if len(current_stage_list) >= 2:
                 yk1 = random.choice(current_stage_list)
@@ -206,8 +225,8 @@ class sondage():
                 yk2 = random.choice(current_stage_list)
                 current_stage_list.remove(yk2)
             else:
-                yk1 = current_stage_list[0] if current_stage_list else sondage_data.get("last_selection1") or "?"
-                yk2 = current_stage_list[1] if len(current_stage_list) > 1 else sondage_data.get("last_selection2") or "?"
+                data.save_json(SONDAGE_PATH, sondage_data)
+                return
             sondage_data["last_selection1"] = yk1
             sondage_data["last_selection2"] = yk2
 
