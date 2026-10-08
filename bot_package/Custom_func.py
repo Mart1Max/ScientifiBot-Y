@@ -124,6 +124,17 @@ async def get_inv(id : int):
     return data
 
 
+async def get_all_player_ids() -> list[int]:
+    """Return numeric player IDs with a saved medallium."""
+    inventory_dir = "./files/inventory"
+    return sorted(
+        int(filename.removesuffix(".json"))
+        for filename in os.listdir(inventory_dir)
+        if filename.endswith(".json")
+        and filename.removesuffix(".json").isdecimal()
+    )
+
+
 
 #save inv func
 async def save_inv(data : dict, id : int):

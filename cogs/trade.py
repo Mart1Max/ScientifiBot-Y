@@ -5,6 +5,14 @@ from bot_package.data import default_medallium
 import re
 
 
+def _context_id(ctx: commands.Context) -> int:
+    return ctx.interaction.id if ctx.interaction is not None else ctx.message.id
+
+
+def _guild_name(guild: discord.Guild | None) -> str:
+    return guild.name if guild is not None else "messages privés"
+
+
 def merge_duplicates(names: list, amounts: list):
     """Fusionne les doublons (même nom) en additionnant leurs quantités.
     Ex: ["kj", "kj"] / ["20", "20"] => ["kj"] / ["40"]."""
@@ -78,7 +86,7 @@ class TradeConfirmView(discord.ui.View):
             pass
         
         #remove the user from the queue
-        await self.bot.trade_queue.delete(self.ctx.interaction.id)
+        await self.bot.trade_queue.delete(_context_id(self.ctx))
 
         self.stop() 
 
@@ -165,7 +173,7 @@ class TradeConfirmView(discord.ui.View):
         
         #remove the user from the queue
 
-        await self.bot.trade_queue.delete(self.ctx.interaction.id)
+        await self.bot.trade_queue.delete(_context_id(self.ctx))
 
         
             
@@ -177,7 +185,7 @@ class TradeConfirmView(discord.ui.View):
         success_embed.add_field(name=f"{self.author.name} a obtenu :", value=self.asked_yokai_form, inline=False)
         success_embed.add_field(name=f"{self.destinataire.name} a obtenu :", value=self.offered_yokai, inline=False)
         
-        self.bot.logger.info(f"{self.destinataire.name} a accepté le trade de {self.author.name}, il demandait {self.asked_yokai_form} contre {self.offered_yokai}, dans {interaction.guild.name}")
+        self.bot.logger.info(f"{self.destinataire.name} a accepté le trade de {self.author.name}, il demandait {self.asked_yokai_form} contre {self.offered_yokai}, dans {_guild_name(interaction.guild)}")
         
         for item in self.children:
             item.disabled = True
@@ -195,15 +203,15 @@ class TradeConfirmView(discord.ui.View):
 
         elif interaction.user.id == self.author.id :
             denied_embed = discord.Embed(color=discord.Color.red(), title=" 🛑 Votre demande a été annulée", description="Merci de relancer la commande si cela était une erreur.")
-            self.bot.logger.info(f"{self.author.name} a annulée son trade pour {self.destinataire.name}, dans {interaction.guild.name}")
+            self.bot.logger.info(f"{self.author.name} a annulée son trade pour {self.destinataire.name}, dans {_guild_name(interaction.guild)}")
         
         else:
             denied_embed = discord.Embed(color=discord.Color.red(), title=" ❌ La demande de trade a été refusée", description="Merci de relancer la commande si cela était une erreur.")
-            self.bot.logger.info(f"{self.destinataire.name} a refusé la demande de trade de {self.author.name}, dans {interaction.guild.name}")
+            self.bot.logger.info(f"{self.destinataire.name} a refusé la demande de trade de {self.author.name}, dans {_guild_name(interaction.guild)}")
                 
         
         #remove the user from the queue
-        await self.bot.trade_queue.delete(self.ctx.interaction.id)
+        await self.bot.trade_queue.delete(_context_id(self.ctx))
 
         
 
@@ -243,7 +251,7 @@ class GiftConfirmView(discord.ui.View):
         except discord.NotFound:
             pass
         #remove the user from the queue
-        await self.bot.trade_queue.delete(self.ctx.interaction.id)
+        await self.bot.trade_queue.delete(_context_id(self.ctx))
 
 
     @discord.ui.button(label="Confirmer le cadeau", style=discord.ButtonStyle.green)
@@ -291,7 +299,7 @@ class GiftConfirmView(discord.ui.View):
         
         
         #remove the user from the queue
-        await self.bot.trade_queue.delete(self.ctx.interaction.id)
+        await self.bot.trade_queue.delete(_context_id(self.ctx))
         
         success_embed = discord.Embed(colour=discord.Color.green(),
                                     title="__**Le cadeau a bien été envoyé !**__ ✅",
@@ -299,7 +307,7 @@ class GiftConfirmView(discord.ui.View):
                                     )
         success_embed.add_field(name=f"{self.recipient.name} a eu :", value=self.offered_yokai+self.offered_item, inline=False)
         
-        self.bot.logger.info(f"{self.author.name} a confirmé son cadeau pour {self.recipient.name}, il offrait {self.offered_yokai+self.offered_item}, dans {interaction.guild.name}")
+        self.bot.logger.info(f"{self.author.name} a confirmé son cadeau pour {self.recipient.name}, il offrait {self.offered_yokai+self.offered_item}, dans {_guild_name(interaction.guild)}")
        
 
         self.value = True 
@@ -323,10 +331,10 @@ class GiftConfirmView(discord.ui.View):
         self.value = False 
         
         denied_embed = discord.Embed(color=discord.Color.red(), title=" 🛑 Votre offre a été annulée", description="Merci de relancer la commande si cela était une erreur.")
-        self.bot.logger.info(f"{self.author.name} a annulée son cadeau pour {self.recipient.name}, dans {interaction.guild.name}")
+        self.bot.logger.info(f"{self.author.name} a annulée son cadeau pour {self.recipient.name}, dans {_guild_name(interaction.guild)}")
         
         #remove the user from the queue
-        await self.bot.trade_queue.delete(self.ctx.interaction.id)
+        await self.bot.trade_queue.delete(_context_id(self.ctx))
         
 
         for item in self.children:
@@ -638,12 +646,12 @@ class Trade(commands.Cog):
         ask_embed.set_author(name="🕰️ La demande timeout au bout de 1min.")
         
 
-        self.bot.logger.info(f"{ctx.author.name} a demandé un trade à {destinataire.name}, il demande {son_yokai+son_item} contre {ton_yokai+ton_item}, dans {ctx.guild.name}")
+        self.bot.logger.info(f"{ctx.author.name} a demandé un trade à {destinataire.name}, il demande {son_yokai+son_item} contre {ton_yokai+ton_item}, dans {_guild_name(ctx.guild)}")
 
 
         
         #ADD the user to the queue
-        await self.bot.trade_queue.add_member(ctx.interaction.id, [ctx.author, destinataire]) 
+        await self.bot.trade_queue.add_member(_context_id(ctx), [ctx.author, destinataire])
         
         
         view = TradeConfirmView(ctx.author, destinataire, asked_yokai_form+asked_item_form, offered_yokai+offered_item, son_yokai, son_item, ton_yokai, ton_item, a_son_yokai, a_son_item, a_ton_yokai, a_ton_item, self.bot, ctx=ctx)
@@ -846,7 +854,7 @@ class Trade(commands.Cog):
         
         #ADD the user to the queue
 
-        await self.bot.trade_queue.add_member(ctx.interaction.id, [ctx.author, destinataire]) 
+        await self.bot.trade_queue.add_member(_context_id(ctx), [ctx.author, destinataire])
         
         ask_embed = discord.Embed(color=discord.Color.green(),
                                 title=f"{ctx.author.display_name} Fait un cadeau à {destinataire.display_name} !",
@@ -860,7 +868,7 @@ class Trade(commands.Cog):
         
 
 
-        self.bot.logger.info(f"{ctx.author.name} fait un cadeau à {destinataire.name}, il offre {ton_yokai+ton_item}, dans {ctx.guild.name}")
+        self.bot.logger.info(f"{ctx.author.name} fait un cadeau à {destinataire.name}, il offre {ton_yokai+ton_item}, dans {_guild_name(ctx.guild)}")
              
         
         view = GiftConfirmView(author=ctx.author, recipient=destinataire, ton_yokai=ton_yokai, offered_yokai=offered_yokai, ton_item=ton_item, offered_item=offered_item, a_ton_yokai=a_ton_yokai, a_ton_item=a_ton_item, bot=self.bot, ctx=ctx)

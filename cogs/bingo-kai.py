@@ -58,7 +58,7 @@ class Bingo_kai(commands.Cog):
         """
 
         interaction = getattr(ctx, "interaction", None)
-        if interaction is not None:
+        if interaction is not None and not interaction.response.is_done():
             await interaction.response.defer(ephemeral=False)
         
         #Secure equipped treasure
@@ -402,7 +402,7 @@ class Bingo_kai(commands.Cog):
                 #is 1h30 past last claim ?
                 #or is it 1h when executed in the support or partner server ?
                 #and subtract 10m if sun's trésor are equip ?
-                if str(ctx.guild.id) in [os.getenv("guild_partner_id")] + [os.getenv("SUPPORT_GUILD_ID")]:
+                if ctx.guild is not None and str(ctx.guild.id) in [os.getenv("guild_partner_id")] + [os.getenv("SUPPORT_GUILD_ID")]:
                     cooldown = 3600
                     cooldown_str = "1h"
                     if equipped_treasure == "Trésor du soleil":
@@ -667,6 +667,9 @@ class Bingo_kai(commands.Cog):
         """
         Alias de /bingo-kai.
         """
+        interaction = getattr(ctx, "interaction", None)
+        if interaction is not None and not interaction.response.is_done():
+            await interaction.response.defer(ephemeral=False)
         await self.bingo_yokai(ctx, coin)
 
 

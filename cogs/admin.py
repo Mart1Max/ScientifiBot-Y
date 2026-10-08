@@ -75,7 +75,7 @@ class Admin_command(commands.Cog):
             self.all_top["Complétion"].clear()
             self.all_top["Points"].clear()
             
-            ids = await get_all_player_ids()
+            ids = await Cf.get_all_player_ids()
             member_data = []
 
             for id in ids:
@@ -296,7 +296,9 @@ class Admin_command(commands.Cog):
     async def economie_mod(self, ctx : commands.context, input_id:discord.User,methode:Literal["add","set","reset","del"],amount=0):
         if not methode in ["add","set","reset","del"]:
             return await ctx.send("Merci d'utiliser une méthode valide ! (add, set, reset, del)", ephemeral=True)
-        elif ctx.guild.get_member(input_id):
+        if ctx.guild is None:
+            return await ctx.send("Cette commande doit être utilisée dans un serveur.", ephemeral=True)
+        elif ctx.guild.get_member(input_id.id) is None:
             return await ctx.send("Merci de fournir un identifiant utilisateur valide.", ephemeral=True)
         else:
             if methode == "add" :

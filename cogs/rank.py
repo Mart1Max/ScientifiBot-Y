@@ -4,7 +4,6 @@ from typing import Literal
 import bot_package.Custom_func as Cf
 import bot_package.data as data
 
-import os
 import time
 
 class Rank(commands.Cog):
@@ -49,8 +48,7 @@ class Rank(commands.Cog):
             self.all_top["Complétion"].clear()
             self.all_top["Points"].clear()
             
-            ids = await get_all_player_ids()
-
+            ids = await Cf.get_all_player_ids()
             for id in ids:
 
                 inv = await Cf.get_inv(id)

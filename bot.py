@@ -282,7 +282,9 @@ class DiscordBot(commands.Bot):
         if context.command.name in ["trade", "cadeau"]:
             #Prevent recipient / author form being stuck in the queue
             
-            await bot.trade_queue.delete(context.interaction.id)
+            interaction = context.interaction
+            context_id = interaction.id if interaction is not None else context.message.id
+            await bot.trade_queue.delete(context_id)
             
         
         

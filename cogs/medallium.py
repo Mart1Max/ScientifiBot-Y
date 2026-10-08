@@ -374,7 +374,18 @@ class Medallium(commands.Cog) :
                     count = 1
 
                 #add it to the right list
-                item_per_class[categorie[0]][elements] = count
+                category = categorie[0]
+                category = {"Trésors": "treasure"}.get(category, category)
+                if category not in item_per_class:
+                    self.bot.logger.warning(
+                        f"Unknown bag category {category!r} for item {elements!r} "
+                        f"belonging to user {user.id}"
+                    )
+                    return await ctx.send(
+                        "Une catégorie d'objet de votre sacoche est invalide. "
+                        "Merci de contacter l'équipe du bot."
+                    )
+                item_per_class[category][elements] = count
 
         #sort the list alphabeticaly :
         for non_sorted_dicts in item_per_class:
@@ -387,9 +398,10 @@ class Medallium(commands.Cog) :
         for category, items in item_per_class.items():
             brute_bag.setdefault(category, len(items))
 
-        await Cf.update_trophe_data(ctx.author.id, "treasure", brute_bag["treasure"], "set")
-        await Cf.update_trophe_data(ctx.author.id, "objects", brute_bag["obj"], "set")
-        await Cf.trophe_check(ctx.author.id, ctx)
+        if user.id == ctx.author.id:
+            await Cf.update_trophe_data(user.id, "treasure", brute_bag["treasure"], "set")
+            await Cf.update_trophe_data(user.id, "objects", brute_bag["obj"], "set")
+            await Cf.trophe_check(user.id, ctx)
 
         #Inv dropdown class
         class Inv_dropdown(discord.ui.Select):
@@ -762,6 +774,12 @@ class Medallium(commands.Cog) :
         bag = await Cf.get_bag(user.id)
         if "trophe_data" not in bag:
             bag["trophe_data"] = {"data": {}, "list": [], "fusion": []}
+        earned_trophies = bag["trophe_data"].get("list", [])
+        trophy_medals = {
+            "bronze": "🥉",
+            "argent": "🥈",
+            "or": "🥇",
+        }
 
         class Inv_dropdown(discord.ui.Select):
             def __init__(self):
@@ -807,11 +825,13 @@ class Medallium(commands.Cog) :
 
                     for trophe in data.trophe_data:
                         if data.trophe_data[trophe]["categorie"] == self.values[0]:
-                            if trophe in bag["trophe_data"]["list"]:
-                                trophe_list += (f"{data.emoji[data.trophe_data[trophe]["type"]]} **{trophe}** ✅\nObtention: {data.trophe_data[trophe]["obtention"]}\n\n")
-                            
-                            else:
-                                trophe_list += (f"{data.emoji[data.trophe_data[trophe]["type"]]} **{trophe}** ❌\nObtention: {data.trophe_data[trophe]["obtention"]}\n\n")
+                            trophy_data = data.trophe_data[trophe]
+                            medal = trophy_medals.get(trophy_data["type"], "🏆")
+                            status = "✅" if trophe in earned_trophies else "❌"
+                            trophe_list += (
+                                f"{medal} **{trophe}** {status}\n"
+                                f"Obtention: {trophy_data['obtention']}\n\n"
+                            )
 
                     trophe_embed = discord.Embed(
                         title = f"Liste des trophées de {user.name} dans la catégorie {self.values[0]}:",

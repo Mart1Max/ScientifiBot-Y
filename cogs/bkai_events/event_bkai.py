@@ -45,8 +45,8 @@ class Terrheure():
         embed.set_footer(text="merci de ne pas supprimer ce message")
         message = await ctx.send(embed=embed, view=view)
         
-        self.bot.logger.info(f"Terrheure started in server {ctx.guild.id}/{ctx.guild.name}, started by {ctx.author.id}/{ctx.author.name}")
-
+        guild_name = f"{ctx.guild.id}/{ctx.guild.name}" if ctx.guild is not None else "DM"
+        self.bot.logger.info(f"Terrheure started in server {guild_name}, started by {ctx.author.id}/{ctx.author.name}")
         # wait the end of the terrheure and edit the first embed
         await asyncio.sleep(300)
         embed_end = discord.Embed(title="La terr'heure est finie !",
@@ -136,8 +136,7 @@ class Terrheure():
         except discord.Forbidden:
             pass
         
-        self.bot.logger.info(f"Terrheure stopped in server {ctx.guild.id}/{ctx.guild.name}, started by {ctx.author.id}/{ctx.author.name}, {users_len} users")
-
+        self.bot.logger.info(f"Terrheure stopped in server {guild_name}, started by {ctx.author.id}/{ctx.author.name}, {users_len} users")
         data.terrheure.setdefault("stats", {})
         data.terrheure["stats"]["activation_time"] = int(data.terrheure["stats"].get("activation_time", 0)) + 1
         data.save_json("./files/terrheure_loot.json", data.terrheure)
