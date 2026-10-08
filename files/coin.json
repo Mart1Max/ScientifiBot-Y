@@ -126,7 +126,7 @@
     "name_en" : "daily coin",
     "color" : "#78acff",
     "id" : "c0019",
-    "proba" : 0.05
+    "proba" : 0
     },
     "Pièce objet (vol.3)" :{
     "name_en" : "object coin (vol.3)",
